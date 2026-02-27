@@ -24,3 +24,6 @@ ex_gix-*.tar
 
 # Rust binary artifacts
 /target/
+
+# Ignore native artifacts built by Rustler
+/priv/native/
