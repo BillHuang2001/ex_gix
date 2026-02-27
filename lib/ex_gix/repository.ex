@@ -139,6 +139,56 @@ defmodule ExGix.Repository do
   end
 
   @doc """
+  Create a new commit object with message referring to tree with parents, and point reference to it.
+  """
+  @spec commit(reference(), String.t(), String.t(), String.t(), [String.t()]) ::
+          {:ok, String.t()} | {:error, String.t()}
+  def commit(repo, reference, message, tree, parents) when is_reference(repo) do
+    ExGix.Native.commit(repo, reference, message, tree, parents)
+  end
+
+  @doc """
+  Similar to commit/5, but allows to create the commit with committer and author specified.
+  """
+  @spec commit_as(
+          reference(),
+          ExGix.Signature.t(),
+          ExGix.Signature.t(),
+          String.t(),
+          String.t(),
+          String.t(),
+          [String.t()]
+        ) :: {:ok, String.t()} | {:error, String.t()}
+  def commit_as(repo, committer, author, reference, message, tree, parents)
+      when is_reference(repo) do
+    ExGix.Native.commit_as(repo, committer, author, reference, message, tree, parents)
+  end
+
+  @doc """
+  Create a new commit object and write it to the object database. Do not update any references.
+  """
+  @spec new_commit(reference(), String.t(), String.t(), [String.t()]) ::
+          {:ok, String.t()} | {:error, String.t()}
+  def new_commit(repo, message, tree, parents) when is_reference(repo) do
+    ExGix.Native.new_commit(repo, message, tree, parents)
+  end
+
+  @doc """
+  Create a new commit object using the specified committer and author, and write it to the object database. Do not update any references.
+  """
+  @spec new_commit_as(
+          reference(),
+          ExGix.Signature.t(),
+          ExGix.Signature.t(),
+          String.t(),
+          String.t(),
+          [String.t()]
+        ) :: {:ok, String.t()} | {:error, String.t()}
+  def new_commit_as(repo, committer, author, message, tree, parents) when is_reference(repo) do
+    ExGix.Native.new_commit_as(repo, committer, author, message, tree, parents)
+  end
+
+  @doc """
   Output the content of a blob object.
   """
   @spec cat_file(reference(), String.t()) ::

@@ -1,6 +1,7 @@
 use rustler::{Env, Term};
 use std::panic::AssertUnwindSafe;
 
+pub mod commit;
 pub mod object_detached;
 pub mod object_id;
 pub mod repository;

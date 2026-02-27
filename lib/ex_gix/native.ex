@@ -18,6 +18,17 @@ defmodule ExGix.Native do
   def cat_file(_resource, _revspec), do: :erlang.nif_error(:nif_not_loaded)
   def status(_resource), do: :erlang.nif_error(:nif_not_loaded)
 
+  def commit(_resource, _reference, _message, _tree, _parents),
+    do: :erlang.nif_error(:nif_not_loaded)
+
+  def commit_as(_resource, _committer, _author, _reference, _message, _tree, _parents),
+    do: :erlang.nif_error(:nif_not_loaded)
+
+  def new_commit(_resource, _message, _tree, _parents), do: :erlang.nif_error(:nif_not_loaded)
+
+  def new_commit_as(_resource, _committer, _author, _message, _tree, _parents),
+    do: :erlang.nif_error(:nif_not_loaded)
+
   def object_id_from_hex(_hex), do: :erlang.nif_error(:nif_not_loaded)
   def object_id_to_hex(_id), do: :erlang.nif_error(:nif_not_loaded)
   def object_id_kind(_id), do: :erlang.nif_error(:nif_not_loaded)
