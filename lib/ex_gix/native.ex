@@ -25,4 +25,8 @@ defmodule ExGix.Native do
   def object_id_is_null(_id), do: :erlang.nif_error(:nif_not_loaded)
   def object_id_is_empty_blob(_id), do: :erlang.nif_error(:nif_not_loaded)
   def object_id_is_empty_tree(_id), do: :erlang.nif_error(:nif_not_loaded)
+
+  def object_detached_id(_obj), do: :erlang.nif_error(:nif_not_loaded)
+  def object_detached_kind(_obj), do: :erlang.nif_error(:nif_not_loaded)
+  def object_detached_data(_obj), do: :erlang.nif_error(:nif_not_loaded)
 end

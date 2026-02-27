@@ -1,6 +1,7 @@
 use rustler::{Env, ResourceArc, Term};
 use std::panic::AssertUnwindSafe;
 
+pub mod object_detached;
 pub mod object_id;
 
 pub struct RepoResource {
@@ -130,6 +131,7 @@ fn remote_names(resource: ResourceArc<RepoResource>) -> Vec<String> {
 pub fn on_load(env: Env, _info: Term) -> bool {
     let _ = rustler::resource!(RepoResource, env);
     let _ = rustler::resource!(object_id::ObjectIdResource, env);
+    let _ = rustler::resource!(object_detached::ObjectDetachedResource, env);
     true
 }
 
