@@ -30,7 +30,9 @@ pub fn discover(path: String) -> Result<ResourceArc<RepoResource>, String> {
 }
 
 #[rustler::nif(schedule = "DirtyIo")]
-pub fn discover_with_environment_overrides(path: String) -> Result<ResourceArc<RepoResource>, String> {
+pub fn discover_with_environment_overrides(
+    path: String,
+) -> Result<ResourceArc<RepoResource>, String> {
     match gix::ThreadSafeRepository::discover_with_environment_overrides(&path) {
         Ok(repo) => {
             let resource = ResourceArc::new(RepoResource {
