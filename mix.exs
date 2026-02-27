@@ -30,7 +30,7 @@ defmodule ExGix.MixProject do
     [
       fmt: [
         "format",
-        "cmd cargo fmt --manifest-path native/io/Cargo.toml"
+        "cmd cargo fmt --manifest-path native/ex_gix/Cargo.toml"
       ]
     ]
   end
