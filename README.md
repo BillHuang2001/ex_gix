@@ -24,3 +24,8 @@ be found at <https://hexdocs.pm/ex_gix>.
 Previous, the popular choice for Git bindings in Elixir was [egit](https://github.com/saleyn/egit), which is a wrapper around the C library libgit2. However it has several limitations compared to a native Rust implementation:
 - Performance: ExGix is designed to be fast, efficient and support multithreading access.
 - Safety: ExGix's API is safer and closer to idiomatic Elixir, reducing the likelihood of bugs and memory safety issues that can arise with C bindings.
+
+## Architecture & Design
+
+Opening a Git repository in ExGix creates a `RepoResource` that contains a `gix::ThreadSafeRepository`. This `ThreadSafeRepository` is a lightweight, thread-safe wrapper around the underlying Git repository data structures.
+In every native function call, ExGix creates a lightweight, thread-local `Repository` instance from the shared `ThreadSafeRepository` using `.to_thread_local()`, ensuring that operations run concurrently without bottlenecking the Erlang schedulers.
