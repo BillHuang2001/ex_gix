@@ -2,6 +2,11 @@
 
 ## Design Philosophy & Architecture
 
+### API Design Principles
+
+- **Idiomatic Elixir:** The public API should feel natural to Elixir developers, using familiar patterns and conventions. For example, we prefer returning `{:ok, result}` or `{:error, reason}` tuples instead of raising exceptions.
+- **High-Level Abstractions:** We aim to provide high-level operations mirroring common Git workflows. Low-level operations will be encapsulated in the Rust layer, while the Elixir API focuses on ease of use and composability.
+
 ### The `ThreadSafeRepository` Factory Pattern
 
 We use `gix::ThreadSafeRepository` as a factory object inside the `RepoResource` Rustler resource.
@@ -28,4 +33,5 @@ We use `gix::ThreadSafeRepository` as a factory object inside the `RepoResource`
 ### Working with Rustler NIFs
 
 - **Scheduling:** Always use `#[rustler::nif(schedule = "DirtyIo")]` or `DirtyCpu` for Git operations to prevent blocking the main Erlang scheduler threads, as file system reads and object lookups can be blocking.
-- **Resource Lifecycle:** We do not provide an explicit `close/1` function for the repository. We rely on the Erlang garbage collector (GC) dropping the `ResourceArc` when it goes out of scope, which cleanly triggers the underlying Rust `Drop` trait for the repository.
+- **Object Lifetimes:** Since elixir uses immutable data structures, only immutable references can be safely passed into Rust. To avoid unnecessary cloning, we should design our high-level API to accept simple identifiers (like object IDs or paths) and perform lookups inside the Rust layer, where we can manage lifetimes more efficiently.
+- **Garbage Collection:** We do not provide an explicit `close/1` function for the repository. We rely on the Erlang garbage collector (GC) dropping the `ResourceArc` when it goes out of scope, which cleanly triggers the underlying Rust `Drop` trait for the repository.

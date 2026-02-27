@@ -1,6 +1,6 @@
 # ExGix
 
-This project provides rustler bindings to the [gitoxide](https://github.com/GitoxideLabs/gitoxide) library, which is a pure Rust implementation of Git. The goal of this project is to provide a high-performance, native Git library for Elixir applications.
+This project provides high-level git operations through rustler bindings to the [gitoxide](https://github.com/GitoxideLabs/gitoxide) library, which is a pure Rust implementation of Git. The goal of this project is to provide a high-performance, native Git library for Elixir applications.
 
 ## Installation
 
