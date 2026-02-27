@@ -1,6 +1,8 @@
 use rustler::{Env, ResourceArc, Term};
 use std::panic::AssertUnwindSafe;
 
+pub mod object_id;
+
 pub struct RepoResource {
     pub repo: AssertUnwindSafe<gix::ThreadSafeRepository>,
 }
@@ -127,6 +129,7 @@ fn remote_names(resource: ResourceArc<RepoResource>) -> Vec<String> {
 #[allow(non_local_definitions)]
 pub fn on_load(env: Env, _info: Term) -> bool {
     let _ = rustler::resource!(RepoResource, env);
+    let _ = rustler::resource!(object_id::ObjectIdResource, env);
     true
 }
 
