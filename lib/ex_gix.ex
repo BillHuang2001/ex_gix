@@ -75,4 +75,52 @@ defmodule ExGix do
   def objects_dir(repo) when is_reference(repo) do
     ExGix.Native.objects_dir(repo)
   end
+
+  @doc """
+  Return true if this repository is bare.
+  """
+  @spec is_bare(reference()) :: boolean()
+  def is_bare(repo) when is_reference(repo) do
+    ExGix.Native.is_bare(repo)
+  end
+
+  @doc """
+  Return true if the repository is a shallow clone.
+  """
+  @spec is_shallow(reference()) :: boolean()
+  def is_shallow(repo) when is_reference(repo) do
+    ExGix.Native.is_shallow(repo)
+  end
+
+  @doc """
+  Resolve the HEAD reference and obtain its object id.
+  """
+  @spec head_id(reference()) :: {:ok, String.t()} | {:error, String.t()}
+  def head_id(repo) when is_reference(repo) do
+    ExGix.Native.head_id(repo)
+  end
+
+  @doc """
+  Return the name to the symbolic reference HEAD points to, or nil if the head is detached.
+  """
+  @spec head_name(reference()) :: {:ok, String.t() | nil} | {:error, String.t()}
+  def head_name(repo) when is_reference(repo) do
+    ExGix.Native.head_name(repo)
+  end
+
+  @doc """
+  Return a set of unique short branch names.
+  """
+  @spec branch_names(reference()) :: [String.t()]
+  def branch_names(repo) when is_reference(repo) do
+    ExGix.Native.branch_names(repo)
+  end
+
+  @doc """
+  Returns a sorted list unique of symbolic names of remotes.
+  """
+  @spec remote_names(reference()) :: [String.t()]
+  def remote_names(repo) when is_reference(repo) do
+    ExGix.Native.remote_names(repo)
+  end
 end

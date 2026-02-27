@@ -75,6 +75,55 @@ fn objects_dir(resource: ResourceArc<RepoResource>) -> String {
     resource.repo.objects_dir().to_string_lossy().to_string()
 }
 
+#[rustler::nif]
+fn is_bare(resource: ResourceArc<RepoResource>) -> bool {
+    let repo = resource.repo.to_thread_local();
+    repo.is_bare()
+}
+
+#[rustler::nif]
+fn is_shallow(resource: ResourceArc<RepoResource>) -> bool {
+    let repo = resource.repo.to_thread_local();
+    repo.is_shallow()
+}
+
+#[rustler::nif]
+fn head_id(resource: ResourceArc<RepoResource>) -> Result<String, String> {
+    let repo = resource.repo.to_thread_local();
+    match repo.head_id() {
+        Ok(id) => Ok(id.to_string()),
+        Err(e) => Err(e.to_string()),
+    }
+}
+
+#[rustler::nif]
+fn head_name(resource: ResourceArc<RepoResource>) -> Result<Option<String>, String> {
+    let repo = resource.repo.to_thread_local();
+    match repo.head_name() {
+        Ok(Some(name)) => Ok(Some(name.to_string())),
+        Ok(None) => Ok(None),
+        Err(e) => Err(e.to_string()),
+    }
+}
+
+#[rustler::nif]
+fn branch_names(resource: ResourceArc<RepoResource>) -> Vec<String> {
+    let repo = resource.repo.to_thread_local();
+    repo.branch_names()
+        .into_iter()
+        .map(|s| s.to_string())
+        .collect()
+}
+
+#[rustler::nif]
+fn remote_names(resource: ResourceArc<RepoResource>) -> Vec<String> {
+    let repo = resource.repo.to_thread_local();
+    repo.remote_names()
+        .into_iter()
+        .map(|s| s.to_string())
+        .collect()
+}
+
 #[allow(non_local_definitions)]
 pub fn on_load(env: Env, _info: Term) -> bool {
     let _ = rustler::resource!(RepoResource, env);

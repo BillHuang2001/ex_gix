@@ -12,6 +12,15 @@ defmodule ExGixTest do
 
     # work_dir could be nil for bare repo, but "." is not bare
     assert is_binary(ExGix.work_dir(repo))
+
+    assert ExGix.is_bare(repo) == false
+    assert ExGix.is_shallow(repo) == false
+
+    assert {:ok, _id} = ExGix.head_id(repo)
+    assert {:ok, _name} = ExGix.head_name(repo)
+
+    assert is_list(ExGix.branch_names(repo))
+    assert is_list(ExGix.remote_names(repo))
   end
 
   test "open invalid repo" do
