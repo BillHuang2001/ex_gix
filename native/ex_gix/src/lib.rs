@@ -4,6 +4,7 @@ use std::panic::AssertUnwindSafe;
 pub mod object_detached;
 pub mod object_id;
 pub mod repository;
+pub mod status;
 
 pub struct RepoResource {
     pub repo: AssertUnwindSafe<gix::ThreadSafeRepository>,

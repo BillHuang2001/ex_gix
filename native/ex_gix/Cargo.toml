@@ -12,5 +12,7 @@ rustler = "0.37.2"
 gix = { version = "0.80", default-features = false, features = [
     "revision",
     "parallel",
-    "attributes"
+    "attributes",
+    "status",
+    "dirwalk"
 ] }

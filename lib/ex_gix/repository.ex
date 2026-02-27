@@ -125,6 +125,20 @@ defmodule ExGix.Repository do
   end
 
   @doc """
+  Gets the status of the repository, returning a list of `ExGix.StatusItem` structs.
+
+  ## Examples
+
+      iex> {:ok, repo} = ExGix.Repository.open("path/to/repo")
+      iex> {:ok, statuses} = ExGix.Repository.status(repo)
+
+  """
+  @spec status(reference()) :: {:ok, [ExGix.StatusItem.t()]} | {:error, String.t()}
+  def status(repo) when is_reference(repo) do
+    ExGix.Native.status(repo)
+  end
+
+  @doc """
   Output the content of a blob object.
   """
   @spec cat_file(reference(), String.t()) ::
