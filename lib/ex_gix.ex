@@ -82,4 +82,9 @@ defmodule ExGix do
   Returns a sorted list unique of symbolic names of remotes.
   """
   defdelegate remote_names(repo), to: Repository
+
+  @doc """
+  Output the content of a blob object.
+  """
+  defdelegate cat_file(repo, revspec), to: Repository
 end

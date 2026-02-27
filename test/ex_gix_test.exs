@@ -47,4 +47,15 @@ defmodule ExGixTest do
     assert is_reference(repo)
     assert ExGix.path(repo) =~ ".git"
   end
+
+  test "cat_file" do
+    assert {:ok, repo} = ExGix.open(".")
+    assert {:ok, content} = ExGix.cat_file(repo, "HEAD:README.md")
+    assert is_binary(content)
+    assert byte_size(content) > 0
+    assert content =~ "ExGix"
+
+    # Test with non-existent path
+    assert {:error, _reason} = ExGix.cat_file(repo, "HEAD:nonexistent.txt")
+  end
 end

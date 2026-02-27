@@ -123,4 +123,14 @@ defmodule ExGix.Repository do
   def remote_names(repo) when is_reference(repo) do
     ExGix.Native.remote_names(repo)
   end
+
+  @doc """
+  Output the content of a blob object.
+  """
+  @spec cat_file(reference(), String.t()) ::
+          {:ok, binary()} | {:error, String.t()}
+  def cat_file(repo, revspec)
+      when is_reference(repo) and is_binary(revspec) do
+    ExGix.Native.cat_file(repo, revspec)
+  end
 end

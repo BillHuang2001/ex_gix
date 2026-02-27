@@ -123,3 +123,23 @@ pub fn remote_names(resource: ResourceArc<RepoResource>) -> Vec<String> {
         .map(|s| s.to_string())
         .collect()
 }
+
+#[rustler::nif(schedule = "DirtyIo")]
+pub fn cat_file<'a>(
+    env: rustler::Env<'a>,
+    resource: ResourceArc<RepoResource>,
+    revspec: String,
+) -> Result<rustler::Binary<'a>, String> {
+    let repo = resource.repo.to_thread_local();
+
+    let spec = repo.rev_parse(revspec.as_str()).map_err(|e| e.to_string())?;
+
+    let object_id = spec.single().ok_or_else(|| "Not a single object".to_string())?;
+    let object = object_id.object().map_err(|e| e.to_string())?;
+
+    let blob = object.try_into_blob().map_err(|_| "Not a blob".to_string())?;
+
+    let mut binary = rustler::OwnedBinary::new(blob.data.len()).unwrap();
+    binary.as_mut_slice().copy_from_slice(blob.data.as_slice());
+    Ok(binary.release(env))
+}
