@@ -7,6 +7,7 @@ defmodule ExGix.MixProject do
       version: "0.1.0",
       elixir: "~> 1.18",
       start_permanent: Mix.env() == :prod,
+      aliases: aliases(),
       deps: deps()
     ]
   end
@@ -22,6 +23,15 @@ defmodule ExGix.MixProject do
   defp deps do
     [
       {:rustler, "~> 0.37.0"}
+    ]
+  end
+
+  defp aliases do
+    [
+      fmt: [
+        "format",
+        "cmd cargo fmt --manifest-path native/io/Cargo.toml"
+      ]
     ]
   end
 end
