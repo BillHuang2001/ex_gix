@@ -8,7 +8,8 @@ defmodule ExGix.MixProject do
       elixir: "~> 1.18",
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
-      deps: deps()
+      deps: deps(),
+      package: package()
     ]
   end
 
@@ -32,6 +33,16 @@ defmodule ExGix.MixProject do
         "format",
         "cmd cargo fmt --manifest-path native/ex_gix/Cargo.toml"
       ]
+    ]
+  end
+
+  defp package do
+    [
+      description: "A Git library for Elixir, powered by Gitoxide.",
+      licenses: ["MIT"],
+      links: %{
+        "GitHub" => "https://github.com/BillHuang2001/ex_gix"
+      }
     ]
   end
 end
