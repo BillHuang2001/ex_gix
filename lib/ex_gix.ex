@@ -87,4 +87,9 @@ defmodule ExGix do
   Output the content of a blob object.
   """
   defdelegate cat_file(repo, revspec), to: Repository
+
+  @doc """
+  Find the object id for the given revision string.
+  """
+  defdelegate rev_parse(repo, revspec), to: Repository
 end

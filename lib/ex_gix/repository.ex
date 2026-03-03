@@ -197,4 +197,12 @@ defmodule ExGix.Repository do
       when is_reference(repo) and is_binary(revspec) do
     ExGix.Native.cat_file(repo, revspec)
   end
+
+  @doc """
+  Find the object id for the given revision string.
+  """
+  @spec rev_parse(reference(), String.t()) :: {:ok, String.t()} | {:error, String.t()}
+  def rev_parse(repo, revspec) when is_reference(repo) and is_binary(revspec) do
+    ExGix.Native.rev_parse(repo, revspec)
+  end
 end

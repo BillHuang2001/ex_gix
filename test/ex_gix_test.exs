@@ -58,4 +58,13 @@ defmodule ExGixTest do
     # Test with non-existent path
     assert {:error, _reason} = ExGix.cat_file(repo, "HEAD:nonexistent.txt")
   end
+
+  test "rev_parse" do
+    assert {:ok, repo} = ExGix.open(".")
+    assert {:ok, id} = ExGix.rev_parse(repo, "HEAD")
+    assert is_binary(id)
+    assert String.length(id) == 40
+
+    assert {:error, _reason} = ExGix.rev_parse(repo, "nonexistent-branch-that-should-not-exist")
+  end
 end

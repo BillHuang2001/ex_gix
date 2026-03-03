@@ -149,3 +149,18 @@ pub fn cat_file<'a>(
     binary.as_mut_slice().copy_from_slice(blob.data.as_slice());
     Ok(binary.release(env))
 }
+
+#[rustler::nif(schedule = "DirtyIo")]
+pub fn rev_parse(resource: ResourceArc<RepoResource>, revspec: String) -> Result<String, String> {
+    let repo = resource.repo.to_thread_local();
+
+    let spec = repo
+        .rev_parse(revspec.as_str())
+        .map_err(|e| e.to_string())?;
+
+    let object_id = spec
+        .single()
+        .ok_or_else(|| "Not a single object".to_string())?;
+
+    Ok(object_id.to_string())
+}

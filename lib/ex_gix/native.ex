@@ -23,6 +23,7 @@ defmodule ExGix.Native do
   def branch_names(_resource), do: :erlang.nif_error(:nif_not_loaded)
   def remote_names(_resource), do: :erlang.nif_error(:nif_not_loaded)
   def cat_file(_resource, _revspec), do: :erlang.nif_error(:nif_not_loaded)
+  def rev_parse(_resource, _revspec), do: :erlang.nif_error(:nif_not_loaded)
   def status(_resource), do: :erlang.nif_error(:nif_not_loaded)
 
   def commit(_resource, _reference, _message, _tree, _parents),
