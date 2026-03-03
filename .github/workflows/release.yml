@@ -45,6 +45,8 @@ jobs:
       - name: Build the project
         id: build-crate
         uses: philss/rustler-precompiled-action@v1.1.4
+        env:
+          CARGO_TARGET_DIR: target
         with:
           project-name: ex_gix
           project-version: ${{ env.PROJECT_VERSION }}
