@@ -9,7 +9,13 @@ defmodule ExGix.MixProject do
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
       deps: deps(),
-      package: package()
+      package: package(),
+      name: "ExGix",
+      source_url: "https://github.com/BillHuang2001/ex_gix",
+      docs: [
+        main: "readme",
+        extras: ["README.md"]
+      ]
     ]
   end
 
@@ -24,7 +30,8 @@ defmodule ExGix.MixProject do
   defp deps do
     [
       {:rustler, "~> 0.37.0", optional: true},
-      {:rustler_precompiled, "~> 0.8"}
+      {:rustler_precompiled, "~> 0.8"},
+      {:ex_doc, "~> 0.34", only: :dev, runtime: false}
     ]
   end
 
@@ -43,7 +50,17 @@ defmodule ExGix.MixProject do
       licenses: ["MIT"],
       links: %{
         "GitHub" => "https://github.com/BillHuang2001/ex_gix"
-      }
+      },
+      files: [
+        "lib",
+        "native/ex_gix/src",
+        "native/ex_gix/Cargo.toml",
+        "native/ex_gix/README.md",
+        "checksum-Elixir.ExGix.Native.exs",
+        "mix.exs",
+        "README.md",
+        "LICENSE"
+      ]
     ]
   end
 end
