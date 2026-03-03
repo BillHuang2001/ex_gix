@@ -61,10 +61,35 @@ defmodule ExGixTest do
 
   test "rev_parse" do
     assert {:ok, repo} = ExGix.open(".")
-    assert {:ok, id} = ExGix.rev_parse(repo, "HEAD")
-    assert is_binary(id)
-    assert String.length(id) == 40
 
+    # Test resolving a commit
+    assert {:ok, commit_id} = ExGix.rev_parse(repo, "HEAD")
+    assert is_binary(commit_id)
+    assert String.length(commit_id) == 40
+
+    # Test resolving a tree
+    assert {:ok, tree_id} = ExGix.rev_parse(repo, "HEAD^{tree}")
+    assert is_binary(tree_id)
+    assert String.length(tree_id) == 40
+
+    # Test resolving a blob
+    assert {:ok, blob_id} = ExGix.rev_parse(repo, "HEAD:README.md")
+    assert is_binary(blob_id)
+    assert String.length(blob_id) == 40
+
+    # Test error handling
     assert {:error, _reason} = ExGix.rev_parse(repo, "nonexistent-branch-that-should-not-exist")
+  end
+
+  test "rev_parse combined with cat_file" do
+    assert {:ok, repo} = ExGix.open(".")
+
+    # First get the OID of a blob using rev_parse
+    assert {:ok, blob_id} = ExGix.rev_parse(repo, "HEAD:README.md")
+
+    # Then read the blob content by passing the OID to cat_file
+    assert {:ok, content} = ExGix.cat_file(repo, blob_id)
+    assert is_binary(content)
+    assert content =~ "ExGix"
   end
 end
