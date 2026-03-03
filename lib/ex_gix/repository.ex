@@ -205,4 +205,12 @@ defmodule ExGix.Repository do
   def rev_parse(repo, revspec) when is_reference(repo) and is_binary(revspec) do
     ExGix.Native.rev_parse(repo, revspec)
   end
+
+  @doc """
+  List the contents of a tree object, similar to `git ls-tree`.
+  """
+  @spec ls_tree(reference(), String.t()) :: {:ok, [ExGix.TreeItem.t()]} | {:error, String.t()}
+  def ls_tree(repo, revspec) when is_reference(repo) and is_binary(revspec) do
+    ExGix.Native.ls_tree(repo, revspec)
+  end
 end

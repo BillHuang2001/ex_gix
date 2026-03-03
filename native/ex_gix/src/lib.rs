@@ -6,6 +6,7 @@ pub mod object_detached;
 pub mod object_id;
 pub mod repository;
 pub mod status;
+pub mod tree;
 
 pub struct RepoResource {
     pub repo: AssertUnwindSafe<gix::ThreadSafeRepository>,
