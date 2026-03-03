@@ -13,6 +13,12 @@ jobs:
       EX_GIX_BUILD: 1
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Configure Git
+        run: |
+          git config --global user.email "test@example.com"
+          git config --global user.name "Test User"
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
       - name: Setup Elixir
