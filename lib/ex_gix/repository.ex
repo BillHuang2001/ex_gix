@@ -137,8 +137,22 @@ defmodule ExGix.Repository do
 
   ## Examples
 
-      iex> {:ok, repo} = ExGix.Repository.open("path/to/repo")
-      iex> {:ok, statuses} = ExGix.Repository.status(repo)
+      {:ok, repo} = ExGix.Repository.open("path/to/repo")
+      {:ok, statuses} = ExGix.Repository.status(repo)
+
+      # Example output:
+      # [
+      #   %ExGix.StatusItem{
+      #     location: :index_worktree,
+      #     path: "new_file.txt",
+      #     status: :untracked
+      #   },
+      #   %ExGix.StatusItem{
+      #     location: :tree_index,
+      #     path: "staged.txt",
+      #     status: :added
+      #   }
+      # ]
 
   """
   @spec status(reference()) :: {:ok, [ExGix.StatusItem.t()]} | {:error, String.t()}
@@ -168,6 +182,20 @@ defmodule ExGix.Repository do
 
   @doc """
   Create a new commit on HEAD using the specified committer and author, automatically resolving the current tree and parent.
+
+  ## Examples
+
+      {:ok, repo} = ExGix.Repository.open("path/to/repo")
+
+      sig = %ExGix.Signature{
+        name: "Test Committer",
+        email: "test@example.com",
+        time_seconds: System.os_time(:second),
+        time_offset: 0
+      }
+
+      {:ok, commit_id} = ExGix.Repository.commit_as(repo, sig, sig, "Test commit message")
+
   """
   @spec commit_as(reference(), ExGix.Signature.t(), ExGix.Signature.t(), String.t()) ::
           {:ok, String.t()} | {:error, String.t()}
@@ -222,6 +250,18 @@ defmodule ExGix.Repository do
 
   @doc """
   Output the content of a blob object.
+
+  ## Examples
+
+      {:ok, repo} = ExGix.Repository.open("path/to/repo")
+
+      # Read a file using a path revision spec
+      {:ok, content} = ExGix.Repository.cat_file(repo, "HEAD:README.md")
+
+      # Read a file using an object ID
+      {:ok, blob_id} = ExGix.Repository.rev_parse(repo, "HEAD:README.md")
+      {:ok, content} = ExGix.Repository.cat_file(repo, blob_id)
+
   """
   @spec cat_file(reference(), String.t()) ::
           {:ok, binary()} | {:error, String.t()}
@@ -232,6 +272,20 @@ defmodule ExGix.Repository do
 
   @doc """
   Find the object id for the given revision string.
+
+  ## Examples
+
+      {:ok, repo} = ExGix.Repository.open("path/to/repo")
+
+      # Resolve a commit
+      {:ok, commit_id} = ExGix.Repository.rev_parse(repo, "HEAD")
+
+      # Resolve a tree
+      {:ok, tree_id} = ExGix.Repository.rev_parse(repo, "HEAD^{tree}")
+
+      # Resolve a blob
+      {:ok, blob_id} = ExGix.Repository.rev_parse(repo, "HEAD:README.md")
+
   """
   @spec rev_parse(reference(), String.t()) :: {:ok, String.t()} | {:error, String.t()}
   def rev_parse(repo, revspec) when is_reference(repo) and is_binary(revspec) do
@@ -241,6 +295,31 @@ defmodule ExGix.Repository do
   @doc """
   List the contents of a tree object, similar to `git ls-tree`.
   Accepts options such as `recursive: true`.
+
+  ## Examples
+
+      {:ok, repo} = ExGix.Repository.open("path/to/repo")
+
+      # List the root tree of the HEAD commit
+      {:ok, items} = ExGix.Repository.ls_tree(repo, "HEAD")
+
+      # List a specific subdirectory
+      {:ok, items} = ExGix.Repository.ls_tree(repo, "HEAD:lib")
+
+      # List recursively
+      {:ok, items} = ExGix.Repository.ls_tree(repo, "HEAD", recursive: true)
+
+      # Items are returned as a list of ExGix.TreeItem structs
+      # [
+      #   %ExGix.TreeItem{
+      #     filename: "README.md",
+      #     kind: :blob,
+      #     mode: "100644",
+      #     oid: #Reference<...>
+      #   },
+      #   ...
+      # ]
+
   """
   @spec ls_tree(reference(), String.t(), keyword()) ::
           {:ok, [ExGix.TreeItem.t()]} | {:error, String.t()}

@@ -8,6 +8,12 @@ defmodule ExGix.ObjectId do
 
   @doc """
   Create an instance from a buffer of 40 bytes or 64 bytes encoded with hexadecimal notation.
+
+  ## Examples
+
+      {:ok, oid} = ExGix.ObjectId.from_hex("e69de29bb2d1d6434b8b29ae775ad8c2e48c5391")
+      is_reference(oid) #=> true
+
   """
   @spec from_hex(String.t()) :: {:ok, t()} | {:error, String.t()}
   def from_hex(hex) when is_binary(hex) do
@@ -16,6 +22,13 @@ defmodule ExGix.ObjectId do
 
   @doc """
   Return a type which displays this oid as hex in full.
+
+  ## Examples
+
+      {:ok, oid} = ExGix.ObjectId.empty_tree()
+      ExGix.ObjectId.to_hex(oid)
+      #=> "4b825dc642cb6eb9a060e54bf8d69288fbee4904"
+
   """
   @spec to_hex(t()) :: String.t()
   def to_hex(object_id) when is_reference(object_id) do
@@ -32,6 +45,12 @@ defmodule ExGix.ObjectId do
 
   @doc """
   The hash of an empty blob.
+
+  ## Examples
+
+      {:ok, oid} = ExGix.ObjectId.empty_blob()
+      ExGix.ObjectId.is_empty_blob(oid) #=> true
+
   """
   @spec empty_blob(kind()) :: {:ok, t()} | {:error, String.t()}
   def empty_blob(kind \\ :sha1) when is_atom(kind) do
@@ -40,6 +59,12 @@ defmodule ExGix.ObjectId do
 
   @doc """
   The hash of an empty tree.
+
+  ## Examples
+
+      {:ok, oid} = ExGix.ObjectId.empty_tree()
+      ExGix.ObjectId.is_empty_tree(oid) #=> true
+
   """
   @spec empty_tree(kind()) :: {:ok, t()} | {:error, String.t()}
   def empty_tree(kind \\ :sha1) when is_atom(kind) do
@@ -48,6 +73,12 @@ defmodule ExGix.ObjectId do
 
   @doc """
   Returns an instances whose bytes are all zero.
+
+  ## Examples
+
+      {:ok, oid} = ExGix.ObjectId.null()
+      ExGix.ObjectId.is_null(oid) #=> true
+
   """
   @spec null(kind()) :: {:ok, t()} | {:error, String.t()}
   def null(kind \\ :sha1) when is_atom(kind) do
