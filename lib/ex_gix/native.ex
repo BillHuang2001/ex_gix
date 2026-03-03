@@ -1,5 +1,12 @@
 defmodule ExGix.Native do
-  use Rustler, otp_app: :ex_gix, crate: "ex_gix"
+  version = Mix.Project.config()[:version]
+
+  use RustlerPrecompiled,
+    otp_app: :ex_gix,
+    crate: "ex_gix",
+    base_url: "https://github.com/BillHuang2001/ex_gix/releases/download/v#{version}",
+    force_build: System.get_env("EX_GIX_BUILD") in ["1", "true"],
+    version: version
 
   def open(_path), do: :erlang.nif_error(:nif_not_loaded)
   def init(_path), do: :erlang.nif_error(:nif_not_loaded)

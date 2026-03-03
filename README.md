@@ -29,3 +29,14 @@ Previous, the popular choice for Git bindings in Elixir was [egit](https://githu
 
 Opening a Git repository in ExGix creates a `RepoResource` that contains a `gix::ThreadSafeRepository`. This `ThreadSafeRepository` is a lightweight, thread-safe wrapper around the underlying Git repository data structures.
 In every native function call, ExGix creates a lightweight, thread-local `Repository` instance from the shared `ThreadSafeRepository` using `.to_thread_local()`, ensuring that operations run concurrently without bottlenecking the Erlang schedulers.
+
+## Local Development
+
+If you want to contribute to `ex_gix` or build the Rust NIF locally instead of using precompiled binaries, you need to set the `EX_GIX_BUILD` environment variable to `1`:
+
+```bash
+export EX_GIX_BUILD=1
+mix deps.get
+mix compile
+mix test
+```

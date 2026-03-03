@@ -23,7 +23,8 @@ defmodule ExGix.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:rustler, "~> 0.37.0"}
+      {:rustler, "~> 0.37.0", optional: true},
+      {:rustler_precompiled, "~> 0.8"}
     ]
   end
 
