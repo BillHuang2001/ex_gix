@@ -19,6 +19,7 @@ defmodule ExGix.Native do
   def is_bare(_resource), do: :erlang.nif_error(:nif_not_loaded)
   def is_shallow(_resource), do: :erlang.nif_error(:nif_not_loaded)
   def head_id(_resource), do: :erlang.nif_error(:nif_not_loaded)
+  def head_tree_id(_resource), do: :erlang.nif_error(:nif_not_loaded)
   def head_name(_resource), do: :erlang.nif_error(:nif_not_loaded)
   def branch_names(_resource), do: :erlang.nif_error(:nif_not_loaded)
   def remote_names(_resource), do: :erlang.nif_error(:nif_not_loaded)

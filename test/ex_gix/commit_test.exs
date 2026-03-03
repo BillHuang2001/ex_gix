@@ -22,13 +22,14 @@ defmodule ExGix.CommitTest do
     File.write!(Path.join(dir, "file.txt"), "content")
     System.cmd("git", ["add", "file.txt"], cd: dir)
 
-    # We need a tree id to commit.
-    # For now, let's just make a commit via CLI and then use its tree to test our commit function.
+    # Make an initial commit via CLI
     {_out, 0} = System.cmd("git", ["commit", "-m", "init"], cd: dir)
 
+    # Verify head_tree_id matches git cli
     {:ok, head_id} = ExGix.Repository.head_id(repo)
     {tree_out, 0} = System.cmd("git", ["log", "-1", "--pretty=%T", head_id], cd: dir)
     tree_id = String.trim(tree_out)
+    assert {:ok, ^tree_id} = ExGix.Repository.head_tree_id(repo)
 
     sig = %ExGix.Signature{
       name: "Test Committer",
@@ -42,10 +43,7 @@ defmodule ExGix.CommitTest do
                repo,
                sig,
                sig,
-               "HEAD",
-               "Test commit message",
-               tree_id,
-               [head_id]
+               "Test commit message"
              )
 
     # verify the commit was created

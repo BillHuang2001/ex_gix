@@ -97,6 +97,15 @@ pub fn head_id(resource: ResourceArc<RepoResource>) -> Result<String, String> {
 }
 
 #[rustler::nif]
+pub fn head_tree_id(resource: ResourceArc<RepoResource>) -> Result<String, String> {
+    let repo = resource.repo.to_thread_local();
+    match repo.head_tree_id() {
+        Ok(id) => Ok(id.to_string()),
+        Err(e) => Err(e.to_string()),
+    }
+}
+
+#[rustler::nif]
 pub fn head_name(resource: ResourceArc<RepoResource>) -> Result<Option<String>, String> {
     let repo = resource.repo.to_thread_local();
     match repo.head_name() {

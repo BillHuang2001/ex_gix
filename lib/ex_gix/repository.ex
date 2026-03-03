@@ -101,6 +101,14 @@ defmodule ExGix.Repository do
   end
 
   @doc """
+  Return the tree id the HEAD reference currently points to after peeling it fully.
+  """
+  @spec head_tree_id(reference()) :: {:ok, String.t()} | {:error, String.t()}
+  def head_tree_id(repo) when is_reference(repo) do
+    ExGix.Native.head_tree_id(repo)
+  end
+
+  @doc """
   Return the name to the symbolic reference HEAD points to, or nil if the head is detached.
   """
   @spec head_name(reference()) :: {:ok, String.t() | nil} | {:error, String.t()}
@@ -139,12 +147,36 @@ defmodule ExGix.Repository do
   end
 
   @doc """
+  Create a new commit on HEAD, automatically resolving the current tree and parent.
+  """
+  @spec commit(reference(), String.t()) :: {:ok, String.t()} | {:error, String.t()}
+  def commit(repo, message) when is_reference(repo) and is_binary(message) do
+    with {:ok, tree_id} <- head_tree_id(repo),
+         {:ok, head_id} <- head_id(repo) do
+      commit(repo, "HEAD", message, tree_id, [head_id])
+    end
+  end
+
+  @doc """
   Create a new commit object with message referring to tree with parents, and point reference to it.
   """
   @spec commit(reference(), String.t(), String.t(), String.t(), [String.t()]) ::
           {:ok, String.t()} | {:error, String.t()}
   def commit(repo, reference, message, tree, parents) when is_reference(repo) do
     ExGix.Native.commit(repo, reference, message, tree, parents)
+  end
+
+  @doc """
+  Create a new commit on HEAD using the specified committer and author, automatically resolving the current tree and parent.
+  """
+  @spec commit_as(reference(), ExGix.Signature.t(), ExGix.Signature.t(), String.t()) ::
+          {:ok, String.t()} | {:error, String.t()}
+  def commit_as(repo, committer, author, message)
+      when is_reference(repo) and is_binary(message) do
+    with {:ok, tree_id} <- head_tree_id(repo),
+         {:ok, head_id} <- head_id(repo) do
+      commit_as(repo, committer, author, "HEAD", message, tree_id, [head_id])
+    end
   end
 
   @doc """
