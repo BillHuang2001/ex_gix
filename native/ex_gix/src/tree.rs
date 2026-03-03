@@ -24,6 +24,7 @@ pub struct TreeItem {
 pub fn ls_tree(
     resource: ResourceArc<RepoResource>,
     revspec: String,
+    recursive: bool,
 ) -> Result<Vec<TreeItem>, String> {
     let repo = resource.repo.to_thread_local();
 
@@ -41,26 +42,53 @@ pub fn ls_tree(
 
     let mut items = Vec::new();
 
-    for entry in tree.iter() {
-        let entry = entry.map_err(|e| e.to_string())?;
+    if recursive {
+        let files = tree
+            .traverse()
+            .breadthfirst
+            .files()
+            .map_err(|e| e.to_string())?;
 
-        let kind = match entry.mode().kind() {
-            gix::objs::tree::EntryKind::Tree => atoms::tree(),
-            gix::objs::tree::EntryKind::Blob => atoms::blob(),
-            gix::objs::tree::EntryKind::BlobExecutable => atoms::exe(),
-            gix::objs::tree::EntryKind::Link => atoms::link(),
-            gix::objs::tree::EntryKind::Commit => atoms::commit(),
-        };
+        for file in files {
+            let kind = match file.mode.kind() {
+                gix::objs::tree::EntryKind::Tree => atoms::tree(),
+                gix::objs::tree::EntryKind::Blob => atoms::blob(),
+                gix::objs::tree::EntryKind::BlobExecutable => atoms::exe(),
+                gix::objs::tree::EntryKind::Link => atoms::link(),
+                gix::objs::tree::EntryKind::Commit => atoms::commit(),
+            };
 
-        // Standard git mode format string
-        let mode_str = format!("{:06o}", entry.mode().value());
+            let mode_str = format!("{:06o}", file.mode.value());
 
-        items.push(TreeItem {
-            mode: mode_str,
-            kind,
-            filename: entry.filename().to_string(),
-            oid: entry.id().to_string(),
-        });
+            items.push(TreeItem {
+                mode: mode_str,
+                kind,
+                filename: file.filepath.to_string(),
+                oid: file.oid.to_string(),
+            });
+        }
+    } else {
+        for entry in tree.iter() {
+            let entry = entry.map_err(|e| e.to_string())?;
+
+            let kind = match entry.mode().kind() {
+                gix::objs::tree::EntryKind::Tree => atoms::tree(),
+                gix::objs::tree::EntryKind::Blob => atoms::blob(),
+                gix::objs::tree::EntryKind::BlobExecutable => atoms::exe(),
+                gix::objs::tree::EntryKind::Link => atoms::link(),
+                gix::objs::tree::EntryKind::Commit => atoms::commit(),
+            };
+
+            // Standard git mode format string
+            let mode_str = format!("{:06o}", entry.mode().value());
+
+            items.push(TreeItem {
+                mode: mode_str,
+                kind,
+                filename: entry.filename().to_string(),
+                oid: entry.id().to_string(),
+            });
+        }
     }
 
     Ok(items)

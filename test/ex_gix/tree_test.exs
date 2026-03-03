@@ -90,4 +90,39 @@ defmodule ExGix.TreeTest do
     assert a_cpp.kind == :blob
     assert a_cpp.mode == "100644"
   end
+
+  test "ls_tree works with recursive option", %{repo: repo, dir: dir} do
+    # Create nested directories and files
+    File.mkdir_p!(Path.join(dir, "foo/bar"))
+    File.write!(Path.join(dir, "foo/bar/a.cpp"), "int main() {}")
+    File.write!(Path.join(dir, "foo/b.txt"), "hello")
+    File.write!(Path.join(dir, "root.txt"), "root")
+
+    System.cmd("git", ["-C", dir, "add", "."])
+    System.cmd("git", ["-C", dir, "commit", "-m", "Recursive commit"])
+
+    assert {:ok, items} = ExGix.Repository.ls_tree(repo, "HEAD", recursive: true)
+
+    # Sort by filename
+    items = Enum.sort_by(items, & &1.filename)
+
+    assert length(items) == 5
+
+    filenames = Enum.map(items, & &1.filename)
+    assert "foo" in filenames
+    assert "foo/b.txt" in filenames
+    assert "foo/bar" in filenames
+    assert "foo/bar/a.cpp" in filenames
+    assert "root.txt" in filenames
+
+    # Check a specific nested file
+    a_cpp = Enum.find(items, &(&1.filename == "foo/bar/a.cpp"))
+    assert a_cpp.kind == :blob
+    assert a_cpp.mode == "100644"
+
+    # Check a directory
+    bar = Enum.find(items, &(&1.filename == "foo/bar"))
+    assert bar.kind == :tree
+    assert bar.mode == "040000"
+  end
 end

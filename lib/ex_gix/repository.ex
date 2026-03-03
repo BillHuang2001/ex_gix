@@ -208,9 +208,12 @@ defmodule ExGix.Repository do
 
   @doc """
   List the contents of a tree object, similar to `git ls-tree`.
+  Accepts options such as `recursive: true`.
   """
-  @spec ls_tree(reference(), String.t()) :: {:ok, [ExGix.TreeItem.t()]} | {:error, String.t()}
-  def ls_tree(repo, revspec) when is_reference(repo) and is_binary(revspec) do
-    ExGix.Native.ls_tree(repo, revspec)
+  @spec ls_tree(reference(), String.t(), keyword()) ::
+          {:ok, [ExGix.TreeItem.t()]} | {:error, String.t()}
+  def ls_tree(repo, revspec, opts \\ []) when is_reference(repo) and is_binary(revspec) do
+    recursive = Keyword.get(opts, :recursive, false)
+    ExGix.Native.ls_tree(repo, revspec, recursive)
   end
 end
