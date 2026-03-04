@@ -1,5 +1,8 @@
 # ExGix
 
+[![Hex Docs](https://img.shields.io/badge/hex-docs-lightgray.svg)](https://hexdocs.pm/ex_gix/)
+[![GitHub](https://img.shields.io/badge/github-repo-black.svg?logo=github)](https://github.com/BillHuang2001/ex_gix)
+
 This project provides high-level git operations through rustler bindings to the [gitoxide](https://github.com/GitoxideLabs/gitoxide) library, which is a pure Rust implementation of Git. The goal of this project is to provide a high-performance, native Git library for Elixir applications.
 
 ## Installation
@@ -140,9 +143,14 @@ sig = %ExGix.Signature{
 
 ## Why ExGix?
 
-Previous, the popular choice for Git bindings in Elixir was [egit](https://github.com/saleyn/egit), which is a wrapper around the C library libgit2. However it has several limitations compared to a native Rust implementation:
-- Performance: ExGix is designed to be fast, efficient and support multithreading access.
-- Safety: ExGix's API is safer and closer to idiomatic Elixir, reducing the likelihood of bugs and memory safety issues that can arise with C bindings.
+The Elixir ecosystem has historically relied on wrappers around the C library `libgit2` (such as `egit`) or pure Elixir implementations like `xgit`. While valuable, these approaches have limitations—C bindings can introduce memory safety risks, and pure Elixir implementations may struggle with the performance required for large repositories.
+
+ExGix bridges this gap by leveraging [gitoxide](https://github.com/GitoxideLabs/gitoxide), a high-performance pure Rust implementation of Git.
+
+- **Performance:** ExGix provides the speed of native code, supporting multi-process access and efficient object handling.
+- **Safety:** Built on Rust's memory-safe guarantees, ExGix avoids the common pitfalls of C interoperability, ensuring that NIF execution does not compromise the stability of the BEAM VM.
+- **Idiomatic Ergonomics:** Unlike bindings that might crash on errors or return raw values, ExGix adheres to Elixir conventions. Expect `{:ok, repo}` and `{:error, reason}` tuples, making it easy to compose pipelines and handle failures gracefully.
+- **Extensibility:** By building on the modular `gitoxide` library, ExGix benefits from a modern, actively developed foundation, enabling easier access to lower-level Git internals and advanced features.
 
 ## Architecture & Design
 
