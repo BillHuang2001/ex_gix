@@ -15,4 +15,5 @@ gix = { version = ">=0.80", default-features = false, features = [
     "attributes",
     "status",
     "dirwalk",
+    "sha1",
 ] }
