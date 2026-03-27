@@ -81,13 +81,13 @@ pub fn is_bare(resource: ResourceArc<RepoResource>) -> bool {
     repo.is_bare()
 }
 
-#[rustler::nif]
+#[rustler::nif(schedule = "DirtyIo")]
 pub fn is_shallow(resource: ResourceArc<RepoResource>) -> bool {
     let repo = resource.repo.to_thread_local();
     repo.is_shallow()
 }
 
-#[rustler::nif]
+#[rustler::nif(schedule = "DirtyIo")]
 pub fn head_id(resource: ResourceArc<RepoResource>) -> Result<String, String> {
     let repo = resource.repo.to_thread_local();
     match repo.head_id() {
@@ -96,7 +96,7 @@ pub fn head_id(resource: ResourceArc<RepoResource>) -> Result<String, String> {
     }
 }
 
-#[rustler::nif]
+#[rustler::nif(schedule = "DirtyIo")]
 pub fn head_tree_id(resource: ResourceArc<RepoResource>) -> Result<String, String> {
     let repo = resource.repo.to_thread_local();
     match repo.head_tree_id() {
@@ -105,7 +105,7 @@ pub fn head_tree_id(resource: ResourceArc<RepoResource>) -> Result<String, Strin
     }
 }
 
-#[rustler::nif]
+#[rustler::nif(schedule = "DirtyIo")]
 pub fn head_name(resource: ResourceArc<RepoResource>) -> Result<Option<String>, String> {
     let repo = resource.repo.to_thread_local();
     match repo.head_name() {
