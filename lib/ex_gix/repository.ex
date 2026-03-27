@@ -117,11 +117,60 @@ defmodule ExGix.Repository do
   end
 
   @doc """
-  Return a set of unique short branch names.
+  Return a list of local branch names (from `refs/heads/`).
+
+  ## Examples
+
+      {:ok, repo} = ExGix.Repository.open(".")
+      {:ok, branches} = ExGix.Repository.local_branches(repo)
+      # ["main", "feature-branch", ...]
+
   """
-  @spec branch_names(reference()) :: [String.t()]
-  def branch_names(repo) when is_reference(repo) do
-    ExGix.Native.branch_names(repo)
+  @spec local_branches(reference()) :: {:ok, [String.t()]} | {:error, String.t()}
+  def local_branches(repo) when is_reference(repo) do
+    ExGix.Native.local_branches(repo)
+  end
+
+  @doc """
+  Return a list of remote tracking branch names (from `refs/remotes/`).
+
+  ## Examples
+
+      {:ok, repo} = ExGix.Repository.open(".")
+      {:ok, branches} = ExGix.Repository.remote_branches(repo)
+      # ["origin/main", "origin/develop", ...]
+
+  """
+  @spec remote_branches(reference()) :: {:ok, [String.t()]} | {:error, String.t()}
+  def remote_branches(repo) when is_reference(repo) do
+    ExGix.Native.remote_branches(repo)
+  end
+
+  @doc """
+  List references in the repository.
+
+  When called with no prefix, returns all references (excluding pseudo-refs).
+  When called with a prefix, returns only references matching that prefix.
+
+  Returns a list of `{name, target}` tuples where `name` is the full ref name
+  and `target` is either the object id or the symbolic target.
+
+  ## Examples
+
+      {:ok, repo} = ExGix.Repository.open(".")
+
+      # All references
+      {:ok, refs} = ExGix.Repository.references(repo)
+      # [{"refs/heads/main", "abc123..."}, {"refs/remotes/origin/main", "abc123..."}]
+
+      # Only tags
+      {:ok, tags} = ExGix.Repository.references(repo, "refs/tags/")
+
+  """
+  @spec references(reference(), String.t() | nil) ::
+          {:ok, [{String.t(), String.t()}]} | {:error, String.t()}
+  def references(repo, prefix \\ nil) when is_reference(repo) do
+    ExGix.Native.list_references(repo, prefix)
   end
 
   @doc """

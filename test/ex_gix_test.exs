@@ -19,7 +19,20 @@ defmodule ExGixTest do
     assert {:ok, _id} = ExGix.head_id(repo)
     assert {:ok, _name} = ExGix.head_name(repo)
 
-    assert is_list(ExGix.branch_names(repo))
+    assert {:ok, branches} = ExGix.local_branches(repo)
+    assert is_list(branches)
+    assert "main" in branches
+
+    assert {:ok, remote_br} = ExGix.remote_branches(repo)
+    assert is_list(remote_br)
+
+    assert {:ok, refs} = ExGix.references(repo)
+    assert is_list(refs)
+    assert Enum.any?(refs, fn {name, _target} -> String.starts_with?(name, "refs/heads/") end)
+
+    assert {:ok, tag_refs} = ExGix.references(repo, "refs/tags/")
+    assert is_list(tag_refs)
+
     assert is_list(ExGix.remote_names(repo))
   end
 

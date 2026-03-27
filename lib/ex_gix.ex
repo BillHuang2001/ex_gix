@@ -74,9 +74,19 @@ defmodule ExGix do
   defdelegate head_name(repo), to: Repository
 
   @doc """
-  Return a set of unique short branch names.
+  Return a list of local branch names.
   """
-  defdelegate branch_names(repo), to: Repository
+  defdelegate local_branches(repo), to: Repository
+
+  @doc """
+  Return a list of remote tracking branch names.
+  """
+  defdelegate remote_branches(repo), to: Repository
+
+  @doc """
+  List references in the repository, optionally filtered by prefix.
+  """
+  defdelegate references(repo, prefix \\ nil), to: Repository
 
   @doc """
   Returns a sorted list unique of symbolic names of remotes.

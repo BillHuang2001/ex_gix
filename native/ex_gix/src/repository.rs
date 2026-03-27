@@ -115,13 +115,62 @@ pub fn head_name(resource: ResourceArc<RepoResource>) -> Result<Option<String>, 
     }
 }
 
-#[rustler::nif]
-pub fn branch_names(resource: ResourceArc<RepoResource>) -> Vec<String> {
+#[rustler::nif(schedule = "DirtyIo")]
+pub fn local_branches(resource: ResourceArc<RepoResource>) -> Result<Vec<String>, String> {
     let repo = resource.repo.to_thread_local();
-    repo.branch_names()
-        .into_iter()
-        .map(|s| s.to_string())
-        .collect()
+    let branches = repo
+        .references()
+        .map_err(|e| e.to_string())?
+        .local_branches()
+        .map_err(|e| e.to_string())?
+        .filter_map(|r| r.ok().map(|r| r.name().shorten().to_string()))
+        .collect();
+    Ok(branches)
+}
+
+#[rustler::nif(schedule = "DirtyIo")]
+pub fn remote_branches(resource: ResourceArc<RepoResource>) -> Result<Vec<String>, String> {
+    let repo = resource.repo.to_thread_local();
+    let branches = repo
+        .references()
+        .map_err(|e| e.to_string())?
+        .remote_branches()
+        .map_err(|e| e.to_string())?
+        .filter_map(|r| r.ok().map(|r| r.name().shorten().to_string()))
+        .collect();
+    Ok(branches)
+}
+
+#[rustler::nif(schedule = "DirtyIo")]
+pub fn list_references(
+    resource: ResourceArc<RepoResource>,
+    prefix: Option<String>,
+) -> Result<Vec<(String, String)>, String> {
+    let repo = resource.repo.to_thread_local();
+    let platform = repo.references().map_err(|e| e.to_string())?;
+
+    let iter: Box<dyn Iterator<Item = Result<gix::Reference<'_>, _>>> = match &prefix {
+        Some(p) => Box::new(
+            platform
+                .prefixed(p.as_bytes())
+                .map_err(|e| e.to_string())?,
+        ),
+        None => Box::new(platform.all().map_err(|e| e.to_string())?),
+    };
+
+    let refs = iter
+        .filter_map(|r| {
+            r.ok().map(|r| {
+                let name = r.name().as_bstr().to_string();
+                let target = match r.target() {
+                    gix::refs::TargetRef::Symbolic(t) => t.as_bstr().to_string(),
+                    gix::refs::TargetRef::Object(oid) => oid.to_string(),
+                };
+                (name, target)
+            })
+        })
+        .collect();
+    Ok(refs)
 }
 
 #[rustler::nif]
