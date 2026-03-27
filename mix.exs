@@ -4,7 +4,7 @@ defmodule ExGix.MixProject do
   def project do
     [
       app: :ex_gix,
-      version: "0.1.2",
+      version: "0.1.3",
       elixir: "~> 1.18",
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
